@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitociencia® — Cuestionario de Evaluación</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --v: #2D6A4F; --vc: #D8F3DC; --vm: #52B788;
+    --m: #5C3D8F; --mc: #EDE7F6;
+    --a: #1A3A5C; --ac: #DDE9F5;
+    --n: #C06000; --nc: #FEF3E2;
+    --d: #B5883A; --dc: #FFF8EC;
+    --gris: #F7F7F5; --borde: #E5E5E0;
+    --texto: #1A1A1A; --texto2: #666; --texto3: #999;
+    --blanco: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #FAFAF8; color: var(--texto); min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    background: var(--v);
+    padding: 2.5rem 1.5rem 3rem;
+    text-align: center;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 48px;
+    background: #FAFAF8;
+    clip-path: ellipse(60% 100% at 50% 100%);
+  }
+  .header-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.12em;
+    display: block;
+  }
+  .header-tagline {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+  }
+  .header-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(255,255,255,0.92);
+    margin-top: 12px;
+    display: block;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 720px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+
+  /* BARRA DE PROGRESO */
+  .progress-wrap { margin-bottom: 1.5rem; }
+  .progress-label { font-size: 12px; color: var(--texto3); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-track { height: 4px; background: var(--borde); border-radius: 2px; }
+  .progress-bar { height: 4px; background: var(--v); border-radius: 2px; transition: width 0.4s ease; }
+
+  /* STEPS */
+  .step { display: none; animation: fadeUp 0.3s ease; }
+  .step.active { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+  /* CARD */
+  .card {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--texto3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 14px;
+  }
+
+  /* DATOS PACIENTE */
+  .datos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media(max-width:500px){ .datos-grid { grid-template-columns: 1fr; } }
+  .input-wrap { display: flex; flex-direction: column; gap: 4px; }
+  .input-wrap label { font-size: 12px; color: var(--texto2); }
+  .input-wrap input {
+    padding: 10px 12px;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--texto);
+    background: var(--gris);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .input-wrap input:focus { border-color: var(--v); background: var(--blanco); }
+
+  /* NOTA */
+  .nota {
+    background: var(--ac);
+    border-left: 3px solid var(--a);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--texto);
+    margin-bottom: 1rem;
+  }
+  .nota strong { color: var(--a); }
+
+  /* BLOQUE */
+  .bloque {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .bloque-header {
+    padding: 1rem 1.25rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bloque-letra {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.9;
+  }
+  .bloque-info h2 { font-size: 17px; font-weight: 500; }
+  .bloque-info small { font-size: 11px; opacity: 0.75; letter-spacing: 0.06em; }
+  .bloque-body { padding: 1.1rem 1.25rem; }
+
+  /* PREGUNTA */
+  .pregunta { margin-bottom: 1.4rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--borde); }
+  .pregunta:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .pregunta-texto { font-size: 14px; font-weight: 500; line-height: 1.55; margin-bottom: 10px; color: var(--texto); }
+  .num { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; background: var(--gris); align-items: center; justify-content: center; font-size: 11px; color: var(--texto3); margin-right: 5px; flex-shrink: 0; }
+
+  /* OPCIONES */
+  .opciones { display: flex; flex-direction: column; gap: 7px; }
+  .opcion {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 11px 14px;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--gris);
+  }
+  .opcion:hover { border-color: #BBB; background: var(--blanco); }
+  .opcion.sel { background: var(--blanco); }
+  .opcion input[type="radio"] { display: none; }
+  .op-letra {
+    min-width: 22px; height: 22px; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: #fff;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .op-texto { font-size: 13px; line-height: 1.5; color: var(--texto); flex: 1; }
+  .op-pts { font-size: 11px; color: var(--texto3); flex-shrink: 0; margin-top: 2px; }
+
+  /* BOTONES */
+  .btn-principal {
+    display: block; width: 100%; padding: 14px;
+    background: var(--v); color: #fff; border: none;
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500; letter-spacing: 0.04em;
+    cursor: pointer; margin-top: 1rem;
+    transition: all 0.2s;
+  }
+  .btn-principal:hover { background: #235c42; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(45,106,79,0.25); }
+  .btn-principal:active { transform: none; }
+
+  .btn-wa {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 13px;
+    background: #25D366; color: #fff; border: none;
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    margin-top: 10px; transition: all 0.2s; text-decoration: none;
+  }
+  .btn-wa:hover { background: #1ebe5d; transform: translateY(-1px); }
+
+  .btn-email {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 13px;
+    background: var(--a); color: #fff; border: none;
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    margin-top: 10px; transition: all 0.2s; text-decoration: none;
+  }
+  .btn-email:hover { background: #132e4a; transform: translateY(-1px); }
+
+  .btn-secundario {
+    display: block; width: 100%; padding: 11px;
+    background: transparent; color: var(--texto2);
+    border: 1px solid var(--borde); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    cursor: pointer; margin-top: 10px; transition: background 0.2s;
+  }
+  .btn-secundario:hover { background: var(--gris); }
+
+  /* ADVERTENCIA */
+  .aviso {
+    display: none;
+    background: #FEF3C7; border: 1px solid #F59E0B;
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; color: #92400E;
+    margin-top: 10px; text-align: center;
+  }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 4rem 1rem; }
+  .spinner {
+    width: 42px; height: 42px;
+    border: 3px solid var(--borde);
+    border-top-color: var(--v);
+    border-radius: 50%;
+    animation: girar 0.8s linear infinite;
+    margin: 0 auto 1.2rem;
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  .loading p { font-size: 15px; color: var(--texto2); }
+  .loading small { font-size: 12px; color: var(--texto3); margin-top: 6px; display: block; }
+
+  /* RESULTADOS */
+  .res-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 700;
+    color: var(--v); text-align: center; margin-bottom: 4px;
+  }
+  .res-subtitulo { text-align: center; font-size: 13px; color: var(--texto2); margin-bottom: 1.5rem; }
+
+  .res-card {
+    background: var(--blanco); border: 1px solid var(--borde);
+    border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
+  }
+  .res-header {
+    padding: 0.9rem 1.25rem; color: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .res-header h3 { font-size: 15px; font-weight: 500; }
+  .res-pts { font-size: 12px; opacity: 0.85; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 20px; }
+  .res-body { padding: 1rem 1.25rem; }
+  .res-producto { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .res-desc { font-size: 13px; color: var(--texto2); line-height: 1.65; margin-bottom: 10px; }
+  .res-tag { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+
+  .plan-box {
+    background: var(--dc); border: 1px solid #E8C97A;
+    border-radius: 12px; padding: 1.25rem; margin-bottom: 1.2rem;
+  }
+  .plan-titulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 700; color: var(--d); margin-bottom: 12px;
+  }
+  .plan-item { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(181,136,58,0.15); font-size: 13px; line-height: 1.5; }
+  .plan-item:last-child { border-bottom: none; }
+  .plan-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+
+  .compartir-titulo {
+    font-size: 13px; font-weight: 500; color: var(--texto2);
+    text-align: center; margin: 1.2rem 0 0.5rem;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  .wa-icon { width: 20px; height: 20px; }
+  .email-icon { width: 18px; height: 18px; }
+
+  .alerta-ok {
+    display: none; background: #D1FAE5; border: 1px solid #10B981;
+    border-radius: 8px; padding: 10px 14px; font-size: 13px;
+    color: #065F46; text-align: center; margin-top: 10px;
+  }
+  .alerta-err {
+    display: none; background: #FEE2E2; border: 1px solid #EF4444;
+    border-radius: 8px; padding: 10px 14px; font-size: 13px;
+    color: #7F1D1D; margin-top: 10px;
+  }
+
+  .divider { height: 1px; background: var(--borde); margin: 1.5rem 0; }
+
+  .footer {
+    text-align: center; font-size: 12px; color: var(--texto3);
+    padding: 2rem 0 1rem; font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <span class="header-logo">Fitociencia®</span>
+  <span class="header-tagline">Sistema Terapéutico Herbal · Guatemala</span>
+  <span class="header-titulo">¿Qué producto Fitociencia® necesito?</span>
+</div>
+
+<div class="container">
+
+  <!-- BARRA DE PROGRESO -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="prog-label">Paso 1 de 5</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-bar" id="prog-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- ════ STEP 1: DATOS ════ -->
+  <div class="step active" id="s1">
+    <div class="card">
+      <div class="card-title">Datos del paciente</div>
+      <div class="datos-grid">
+        <div class="input-wrap">
+          <label>Nombre completo</label>
+          <input type="text" id="nombre" placeholder="Tu nombre">
+        </div>
+        <div class="input-wrap">
+          <label>Fecha</label>
+          <input type="text" id="fecha" placeholder="dd/mm/aaaa">
+        </div>
+        <div class="input-wrap">
+          <label>Edad</label>
+          <input type="text" id="edad" placeholder="Ej. 35">
+        </div>
+        <div class="input-wrap">
+          <label>Profesional que te atiende</label>
+          <input type="text" id="profe" placeholder="Nombre del profesional">
+        </div>
+        <div class="input-wrap" style="grid-column: 1 / -1;">
+          <label>Tu correo electrónico (para recibir tu plan)</label>
+          <input type="email" id="correo-paciente" placeholder="tucorreo@gmail.com">
+        </div>
+      </div>
+    </div>
+    <div class="nota">
+      <strong>Instrucciones:</strong> Marca una sola opción por pregunta — la que mejor describe tu situación en las <strong>últimas 2 semanas</strong>. Al finalizar verás tu plan personalizado Fitociencia® y podrás enviártelo por WhatsApp o correo.
+    </div>
+    <button class="btn-principal" onclick="irA(2)">Comenzar evaluación →</button>
+  </div>
+
+  <!-- ════ STEP 2: BLOQUE A ════ -->
+  <div class="step" id="s2">
+    <div class="bloque">
+      <div class="bloque-header" style="background:var(--v)">
+        <div class="bloque-letra">A</div>
+        <div class="bloque-info">
+          <h2>Estrés y sistema nervioso</h2>
+          <small>Preguntas 1–3 · máximo 12 puntos</small>
+        </div>
+      </div>
+      <div class="bloque-body">
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">1</span>¿Cómo describirías tu nivel de estrés en las últimas 2 semanas?</div>
+          <div class="opciones" data-grupo="q1">
+            <label class="opcion"><input type="radio" name="q1" value="1"><div class="op-letra" style="background:var(--v)">A</div><div class="op-texto">Sin estrés o muy leve. Me siento tranquila/o la mayor parte del tiempo.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q1" value="2"><div class="op-letra" style="background:var(--v)">B</div><div class="op-texto">Estrés moderado. Tengo momentos de tensión pero puedo manejarlo.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q1" value="3"><div class="op-letra" style="background:var(--v)">C</div><div class="op-texto">Estrés frecuente y acumulado. Me cuesta desconectarme aunque quiera.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q1" value="4"><div class="op-letra" style="background:var(--v)">D</div><div class="op-texto">Estrés intenso y constante. Siento que estoy al límite casi todo el tiempo.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">2</span>¿Sientes tensión muscular (cuello, hombros) relacionada con el estrés?</div>
+          <div class="opciones" data-grupo="q2">
+            <label class="opcion"><input type="radio" name="q2" value="1"><div class="op-letra" style="background:var(--v)">A</div><div class="op-texto">No tengo tensión muscular perceptible.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q2" value="2"><div class="op-letra" style="background:var(--v)">B</div><div class="op-texto">A veces, especialmente al final del día.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q2" value="3"><div class="op-letra" style="background:var(--v)">C</div><div class="op-texto">Frecuentemente. La tensión está casi siempre presente.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q2" value="4"><div class="op-letra" style="background:var(--v)">D</div><div class="op-texto">Sí, tengo contracturas o dolor muscular crónico relacionado con el estrés.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">3</span>¿Cómo te sientes emocionalmente la mayor parte del día?</div>
+          <div class="opciones" data-grupo="q3">
+            <label class="opcion"><input type="radio" name="q3" value="1"><div class="op-letra" style="background:var(--v)">A</div><div class="op-texto">Estable y equilibrada/o. Sin alteraciones emocionales significativas.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q3" value="2"><div class="op-letra" style="background:var(--v)">B</div><div class="op-texto">Algo irritable o ansiosa/o en ciertos momentos.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q3" value="3"><div class="op-letra" style="background:var(--v)">C</div><div class="op-texto">Con frecuencia irritable o con dificultad para relajarme.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q3" value="4"><div class="op-letra" style="background:var(--v)">D</div><div class="op-texto">Con ansiedad intensa o sensación de agotamiento emocional constante.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aviso" id="av2">Por favor responde todas las preguntas antes de continuar.</div>
+    <button class="btn-principal" onclick="siguiente('s2','s3',['q1','q2','q3'],'av2',3)">Siguiente bloque →</button>
+  </div>
+
+  <!-- ════ STEP 3: BLOQUE B ════ -->
+  <div class="step" id="s3">
+    <div class="bloque">
+      <div class="bloque-header" style="background:var(--m)">
+        <div class="bloque-letra">B</div>
+        <div class="bloque-info">
+          <h2>Calidad del sueño</h2>
+          <small>Preguntas 4–7 · máximo 16 puntos</small>
+        </div>
+      </div>
+      <div class="bloque-body">
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">4</span>¿Cuánto tiempo tardas en quedarte dormida/o habitualmente?</div>
+          <div class="opciones" data-grupo="q4">
+            <label class="opcion"><input type="radio" name="q4" value="1"><div class="op-letra" style="background:var(--m)">A</div><div class="op-texto">Menos de 15 minutos. Me duermo con facilidad.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q4" value="2"><div class="op-letra" style="background:var(--m)">B</div><div class="op-texto">Entre 15 y 30 minutos. Tardo un poco pero me duermo.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q4" value="3"><div class="op-letra" style="background:var(--m)">C</div><div class="op-texto">Entre 30 y 60 minutos. Me cuesta trabajo conciliar el sueño.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q4" value="4"><div class="op-letra" style="background:var(--m)">D</div><div class="op-texto">Más de 1 hora o no puedo dormir sin ayuda.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">5</span>¿Te despiertas durante la noche?</div>
+          <div class="opciones" data-grupo="q5">
+            <label class="opcion"><input type="radio" name="q5" value="1"><div class="op-letra" style="background:var(--m)">A</div><div class="op-texto">No, duermo de corrido toda la noche.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q5" value="2"><div class="op-letra" style="background:var(--m)">B</div><div class="op-texto">A veces, pero vuelvo a dormir rápido.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q5" value="3"><div class="op-letra" style="background:var(--m)">C</div><div class="op-texto">Frecuentemente. Me despierto 2 o más veces y cuesta volver a dormir.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q5" value="4"><div class="op-letra" style="background:var(--m)">D</div><div class="op-texto">Casi todas las noches. Hay noches en que no puedo volver a dormir.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">6</span>¿Cómo te sientes al despertar en la mañana?</div>
+          <div class="opciones" data-grupo="q6">
+            <label class="opcion"><input type="radio" name="q6" value="1"><div class="op-letra" style="background:var(--m)">A</div><div class="op-texto">Descansada/o y con energía. El sueño fue reparador.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q6" value="2"><div class="op-letra" style="background:var(--m)">B</div><div class="op-texto">Más o menos. Algunos días bien, otros no tanto.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q6" value="3"><div class="op-letra" style="background:var(--m)">C</div><div class="op-texto">Frecuentemente cansada/o aunque dormí horas suficientes.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q6" value="4"><div class="op-letra" style="background:var(--m)">D</div><div class="op-texto">Agotada/o al levantarme. El sueño no me repara.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">7</span>¿Tienes pensamientos que no puedes apagar cuando intentas dormir?</div>
+          <div class="opciones" data-grupo="q7">
+            <label class="opcion"><input type="radio" name="q7" value="1"><div class="op-letra" style="background:var(--m)">A</div><div class="op-texto">No, puedo desconectar mi mente al acostarme.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q7" value="2"><div class="op-letra" style="background:var(--m)">B</div><div class="op-texto">A veces, pero no es un problema frecuente.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q7" value="3"><div class="op-letra" style="background:var(--m)">C</div><div class="op-texto">Frecuentemente. La mente sigue activa cuando quiero dormir.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q7" value="4"><div class="op-letra" style="background:var(--m)">D</div><div class="op-texto">Casi siempre. La rumiación nocturna es uno de mis principales problemas.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aviso" id="av3">Por favor responde todas las preguntas antes de continuar.</div>
+    <button class="btn-principal" onclick="siguiente('s3','s4',['q4','q5','q6','q7'],'av3',4)">Siguiente bloque →</button>
+  </div>
+
+  <!-- ════ STEP 4: BLOQUE C + D ════ -->
+  <div class="step" id="s4">
+    <div class="bloque">
+      <div class="bloque-header" style="background:var(--a)">
+        <div class="bloque-letra">C</div>
+        <div class="bloque-info">
+          <h2>Dolor y sistema neuromuscular</h2>
+          <small>Preguntas 8–10 · máximo 12 puntos</small>
+        </div>
+      </div>
+      <div class="bloque-body">
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">8</span>¿Tienes dolor muscular, contracturas o tensión física?</div>
+          <div class="opciones" data-grupo="q8">
+            <label class="opcion"><input type="radio" name="q8" value="1"><div class="op-letra" style="background:var(--a)">A</div><div class="op-texto">No tengo dolor ni contracturas musculares.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q8" value="2"><div class="op-letra" style="background:var(--a)">B</div><div class="op-texto">Dolor leve ocasional (después de mucho trabajo o ejercicio).</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q8" value="3"><div class="op-letra" style="background:var(--a)">C</div><div class="op-texto">Dolor moderado y frecuente en cuello, hombros o espalda baja.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q8" value="4"><div class="op-letra" style="background:var(--a)">D</div><div class="op-texto">Dolor intenso o crónico que afecta mis actividades diarias.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">9</span>¿Has sido diagnosticada/o con alguna de estas condiciones?</div>
+          <div class="opciones" data-grupo="q9">
+            <label class="opcion"><input type="radio" name="q9" value="1"><div class="op-letra" style="background:var(--a)">A</div><div class="op-texto">Ninguna de las anteriores.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q9" value="2"><div class="op-letra" style="background:var(--a)">B</div><div class="op-texto">Lumbalgia o dolor cervical recurrente.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q9" value="3"><div class="op-letra" style="background:var(--a)">C</div><div class="op-texto">Contracturas crónicas o puntos gatillo activos.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q9" value="4"><div class="op-letra" style="background:var(--a)">D</div><div class="op-texto">Fibromialgia, fatiga crónica o dolor difuso generalizado.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">10</span>¿El dolor muscular empeora con el estrés?</div>
+          <div class="opciones" data-grupo="q10">
+            <label class="opcion"><input type="radio" name="q10" value="1"><div class="op-letra" style="background:var(--a)">A</div><div class="op-texto">No noto relación entre estrés y dolor físico.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q10" value="2"><div class="op-letra" style="background:var(--a)">B</div><div class="op-texto">A veces. El estrés puede tensarme un poco más.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q10" value="3"><div class="op-letra" style="background:var(--a)">C</div><div class="op-texto">Sí, claramente. El estrés intensifica el dolor o las contracturas.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q10" value="4"><div class="op-letra" style="background:var(--a)">D</div><div class="op-texto">Siempre. El dolor físico y emocional están muy conectados en mi caso.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloque" style="margin-top:1rem">
+      <div class="bloque-header" style="background:var(--n)">
+        <div class="bloque-letra">D</div>
+        <div class="bloque-info">
+          <h2>Digestión y bienestar digestivo</h2>
+          <small>Preguntas 11–12 · máximo 8 puntos</small>
+        </div>
+      </div>
+      <div class="bloque-body">
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">11</span>¿Cómo describirías tu digestión habitual?</div>
+          <div class="opciones" data-grupo="q11">
+            <label class="opcion"><input type="radio" name="q11" value="1"><div class="op-letra" style="background:var(--n)">A</div><div class="op-texto">Sin problemas. Digiero bien y sin molestias.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q11" value="2"><div class="op-letra" style="background:var(--n)">B</div><div class="op-texto">Ocasionalmente tengo hinchazón, gases o pesadez.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q11" value="3"><div class="op-letra" style="background:var(--n)">C</div><div class="op-texto">Frecuentemente tengo molestias digestivas (hinchazón, reflujo, espasmos).</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q11" value="4"><div class="op-letra" style="background:var(--n)">D</div><div class="op-texto">Problemas digestivos crónicos que afectan mi bienestar diario.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+        <div class="pregunta">
+          <div class="pregunta-texto"><span class="num">12</span>¿El estrés afecta tu digestión?</div>
+          <div class="opciones" data-grupo="q12">
+            <label class="opcion"><input type="radio" name="q12" value="1"><div class="op-letra" style="background:var(--n)">A</div><div class="op-texto">No, mi digestión no cambia con el estrés.</div><div class="op-pts">1 pt</div></label>
+            <label class="opcion"><input type="radio" name="q12" value="2"><div class="op-letra" style="background:var(--n)">B</div><div class="op-texto">Levemente. A veces el estómago más sensible bajo presión.</div><div class="op-pts">2 pts</div></label>
+            <label class="opcion"><input type="radio" name="q12" value="3"><div class="op-letra" style="background:var(--n)">C</div><div class="op-texto">Sí. El estrés empeora claramente mis síntomas digestivos.</div><div class="op-pts">3 pts</div></label>
+            <label class="opcion"><input type="radio" name="q12" value="4"><div class="op-letra" style="background:var(--n)">D</div><div class="op-texto">Mucho. El estrés y la digestión están muy ligados en mi caso.</div><div class="op-pts">4 pts</div></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aviso" id="av4">Por favor responde todas las preguntas antes de continuar.</div>
+    <button class="btn-principal" onclick="evaluar()">Ver mi plan Fitociencia® →</button>
+  </div>
+
+  <!-- ════ STEP 5: LOADING ════ -->
+  <div class="step" id="s5">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Generando tu plan personalizado...</p>
+      <small>Enviando resultados a Fitociencia®</small>
+    </div>
+  </div>
+
+  <!-- ════ STEP 6: RESULTADOS ════ -->
+  <div class="step" id="s6">
+    <div class="res-titulo">Tu plan Fitociencia®</div>
+    <div class="res-subtitulo" id="res-sub"></div>
+
+    <div class="res-card">
+      <div class="res-header" style="background:var(--v)">
+        <h3>Bloque A — Estrés y sistema nervioso</h3>
+        <span class="res-pts" id="ptA"></span>
+      </div>
+      <div class="res-body">
+        <div class="res-producto" id="pA" style="color:var(--v)"></div>
+        <div class="res-desc" id="dA"></div>
+        <span class="res-tag" id="tA" style="background:var(--vc);color:var(--v)"></span>
+      </div>
+    </div>
+
+    <div class="res-card">
+      <div class="res-header" style="background:var(--m)">
+        <h3>Bloque B — Calidad del sueño</h3>
+        <span class="res-pts" id="ptB"></span>
+      </div>
+      <div class="res-body">
+        <div class="res-producto" id="pB" style="color:var(--m)"></div>
+        <div class="res-desc" id="dB"></div>
+        <span class="res-tag" id="tB" style="background:var(--mc);color:var(--m)"></span>
+      </div>
+    </div>
+
+    <div class="res-card">
+      <div class="res-header" style="background:var(--a)">
+        <h3>Bloque C — Sistema neuromuscular</h3>
+        <span class="res-pts" id="ptC"></span>
+      </div>
+      <div class="res-body">
+        <div class="res-producto" id="pC" style="color:var(--a)"></div>
+        <div class="res-desc" id="dC"></div>
+        <span class="res-tag" id="tC" style="background:var(--ac);color:var(--a)"></span>
+      </div>
+    </div>
+
+    <div class="res-card">
+      <div class="res-header" style="background:var(--n)">
+        <h3>Bloque D — Digestión</h3>
+        <span class="res-pts" id="ptD"></span>
+      </div>
+      <div class="res-body">
+        <div class="res-producto" id="pD" style="color:var(--n)"></div>
+        <div class="res-desc" id="dD"></div>
+        <span class="res-tag" id="tD" style="background:var(--nc);color:var(--n)"></span>
+      </div>
+    </div>
+
+    <div class="plan-box">
+      <div class="plan-titulo">✦ Resumen de tu plan personalizado</div>
+      <div id="planLista"></div>
+    </div>
+
+    <!-- BOTONES COMPARTIR -->
+    <div class="compartir-titulo">Comparte o guarda tu plan</div>
+    <div class="nota" style="margin-bottom:0.75rem;">
+      <strong>Importante:</strong> En esta versión sin backend, WhatsApp y correo se abren en la app del usuario con el plan ya preparado. El envío automático a Fitociencia® se realiza por Formspree.
+    </div>
+
+    <a id="btn-wa" class="btn-wa" href="#" target="_blank">
+      <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Enviarme por WhatsApp
+    </a>
+
+    <a id="btn-email-pac" class="btn-email" href="#" target="_blank">
+      <svg class="email-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+      Enviarme por correo
+    </a>
+
+    <div class="divider"></div>
+
+    <div class="alerta-ok" id="alertaOk">
+      Resultados enviados a Fitociencia® — recibirás atención personalizada pronto.
+    </div>
+    <div class="alerta-err" id="alertaErr">
+      No se pudo enviar el correo automático. Por favor guarda una captura de pantalla de este plan.
+    </div>
+
+    <button class="btn-secundario" onclick="reiniciar()">Hacer el cuestionario de nuevo</button>
+  </div>
+
+  <div class="footer">Fitociencia® · Sistema Terapéutico Herbal · Guatemala 2026</div>
+
+</div>
+
+<script>
+const PROG_LABELS = ['Paso 1 de 5','Paso 2 de 5','Paso 3 de 5','Paso 4 de 5','Procesando...','Resultados'];
+const PROG_PCTS   = ['0%','20%','45%','70%','90%','100%'];
+const STEPS = ['s1','s2','s3','s4','s5','s6'];
+const FORMSPREE = 'https://formspree.io/f/xbdqdyoq';
+const CONFIG = {
+  // Reemplaza este número con el WhatsApp oficial de Fitociencia en formato internacional, sin signo +
+  whatsappNumber: '+50230092176',
+  contactoEmail: 'athianjoshua@gmail.com'
+};
+
+function buildWhatsAppLink(texto) {
+  const numero = (CONFIG.whatsappNumber || '').replace(/\D/g, '');
+  return numero
+    ? `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
+    : `https://wa.me/?text=${encodeURIComponent(texto)}`;
+}
+
+function buildMailtoLink(to, subject, body) {
+  const destino = (to || '').trim();
+  const qs = new URLSearchParams({
+    subject: subject || '',
+    body: body || ''
+  });
+  return `mailto:${destino}?${qs.toString()}`;
+}
+
+// Marcar selección visual
+document.querySelectorAll('.opcion').forEach(op => {
+  op.addEventListener('click', () => {
+    const nm = op.querySelector('input').name;
+    document.querySelectorAll(`input[name="${nm}"]`).forEach(r => r.closest('.opcion').classList.remove('sel'));
+    op.classList.add('sel');
+  });
+});
+
+function gv(nm) {
+  const r = document.querySelector(`input[name="${nm}"]:checked`);
+  return r ? parseInt(r.value) : null;
+}
+
+function irA(n) {
+  STEPS.forEach((id, i) => document.getElementById(id).classList.toggle('active', i === n - 1));
+  document.getElementById('prog-bar').style.width = PROG_PCTS[n-1];
+  document.getElementById('prog-label').textContent = PROG_LABELS[n-1];
+  document.getElementById('prog-pct').textContent = PROG_PCTS[n-1];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function siguiente(de, a, qs, avId, stepNum) {
+  if (qs.some(q => gv(q) === null)) {
+    document.getElementById(avId).style.display = 'block';
+    return;
+  }
+  document.getElementById(avId).style.display = 'none';
+  irA(stepNum);
+}
+
+function calcRes(pA, pB, pC, pD) {
+  const r = {};
+  if (pA <= 5) { r.pA='Sin protocolo activo por ahora'; r.dA='Tu nivel de estrés es leve. Puedes usar la Infusión Neurovegetativa de forma preventiva 2–3 veces por semana cuando sientas acumulación de tensión.'; r.tA='Nivel leve'; }
+  else if (pA <= 8) { r.pA='Infusión Neurovegetativa · Protocolo 8 semanas'; r.dA='Estrés moderado que ya afecta tu bienestar. Iniciar el protocolo completo — 2 tazas diarias (mañana y tarde) las primeras 4 semanas, reducción progresiva después.'; r.tA='Nivel moderado'; }
+  else { r.pA='Infusión Neurovegetativa + Sachet Sensōris™ Serēno'; r.dA='Estrés intenso y crónico. Protocolo de 8 semanas + soporte aromático diurno con el Sachet Nivel 2 para amplificar el efecto.'; r.tA='Nivel intenso'; }
+
+  if (pB <= 7) { r.pB='Sin intervención activa · Sachet Sensōris™ Calma (Nivel 1) opcional'; r.dB='Tu sueño es bueno. Si quieres mejorar preventivamente el descanso, coloca el Sachet Sensōris™ Calma junto a la almohada.'; r.tB='Sueño bueno'; }
+  else if (pB <= 12) { r.pB='Infusión Somnium · Protocolo 8 semanas'; r.dB='Insomnio moderado o sueño no reparador. 1 taza todas las noches semanas 1–2, reducción progresiva a 3–4 noches/semana después.'; r.tB='Sueño alterado moderado'; }
+  else { r.pB='Infusión Somnium + Sachet Sensōris™ Noctis (Nivel 3)'; r.dB='Insomnio intenso con rumiación nocturna. Protocolo Somnium completo + Sachet Noctis bajo la almohada cada noche.'; r.tB='Insomnio severo'; }
+
+  if (pC <= 5) { r.pC='Sin kit neuromuscular por ahora'; r.dC='No tienes dolor muscular crónico significativo en este momento.'; r.tC='Sin dolor significativo'; }
+  else if (pC <= 7) { r.pC='Kit NeuroMuscular Nivel 1 — Mantenimiento'; r.dC='Tensión muscular moderada. Aceite herbal + almohadilla térmica + sachet. Masaje diario y almohadilla en momentos de mayor tensión.'; r.tC='Tensión leve-moderada'; }
+  else if (pC <= 9) { r.pC='Kit NeuroMuscular Nivel 2 — Activo'; r.dC='Dolor frecuente o contracturas recurrentes. Aceite + bálsamo + almohadilla + sachet + Compresa de Ricino 1 vez al día.'; r.tC='Dolor moderado frecuente'; }
+  else { r.pC='Kit NeuroMuscular Nivel 3 — Profundo'; r.dC='Fibromialgia, dolor crónico intenso. Kit máximo + Compresa de Ricino Premium 2 veces al día.'; r.tC='Dolor crónico / Fibromialgia'; }
+
+  if (pD <= 3) { r.pD='Sin intervención digestiva activa'; r.dD='Tu digestión está bien. No se requiere la Infusión Digestum en este momento.'; r.tD='Digestión buena'; }
+  else if (pD <= 5) { r.pD='Infusión Digestum · Uso puntual post-comida'; r.dD='Molestias digestivas ocasionales. Usar la Infusión Digestum después de las comidas más pesadas.'; r.tD='Molestias ocasionales'; }
+  else { r.pD='Infusión Digestum · Protocolo diario 4 semanas'; r.dD='Problemas digestivos frecuentes. Infusión Digestum después de cada comida principal durante 4 semanas.'; r.tD='Molestias frecuentes / crónicas'; }
+
+  return r;
+}
+
+function buildPlan(pA, pB, pC, pD) {
+  const items = [];
+  if (pA >= 6)  items.push({ c:'#2D6A4F', b:'Infusión Neurovegetativa', d:' · Protocolo 8 semanas · Mañana y tarde' });
+  if (pA >= 9)  items.push({ c:'#52B788', b:'Sachet Sensōris™ Serēno (Nivel 2)', d:' · Uso diurno' });
+  if (pB >= 8)  items.push({ c:'#5C3D8F', b:'Infusión Somnium', d:' · Protocolo 8 semanas · 30–45 min antes de dormir' });
+  if (pB >= 13) items.push({ c:'#7B5CB8', b:'Sachet Sensōris™ Noctis (Nivel 3)', d:' · Bajo la almohada cada noche' });
+  if (pB >= 4 && pB <= 7) items.push({ c:'#9B8EC4', b:'Sachet Sensōris™ Calma (Nivel 1)', d:' · Preventivo' });
+  if (pC >= 6 && pC <= 7) items.push({ c:'#1A3A5C', b:'Kit NeuroMuscular Nivel 1', d:' · Aceite + almohadilla' });
+  if (pC >= 8 && pC <= 9) items.push({ c:'#1A3A5C', b:'Kit NeuroMuscular Nivel 2', d:' · Aceite + bálsamo + almohadilla' });
+  if (pC >= 10) items.push({ c:'#8B2020', b:'Kit NeuroMuscular Nivel 3', d:' · Kit completo + Compresa de Ricino 2x/día' });
+  if (pD >= 4 && pD <= 5) items.push({ c:'#C06000', b:'Infusión Digestum', d:' · Post-comida · Uso puntual' });
+  if (pD >= 6)  items.push({ c:'#C06000', b:'Infusión Digestum', d:' · Protocolo diario 4 semanas' });
+  if (items.length === 0) items.push({ c:'#52B788', b:'Sin intervención activa necesaria', d:' · Uso preventivo esporádico' });
+  return items;
+}
+
+async function evaluar() {
+  if (['q8','q9','q10','q11','q12'].some(q => gv(q) === null)) {
+    document.getElementById('av4').style.display = 'block';
+    return;
+  }
+  document.getElementById('av4').style.display = 'none';
+  irA(5);
+
+  const pA = gv('q1') + gv('q2') + gv('q3');
+  const pB = gv('q4') + gv('q5') + gv('q6') + gv('q7');
+  const pC = gv('q8') + gv('q9') + gv('q10');
+  const pD = gv('q11') + gv('q12');
+
+  const nombre  = document.getElementById('nombre').value  || 'Paciente';
+  const fecha   = document.getElementById('fecha').value   || new Date().toLocaleDateString('es-GT');
+  const edad    = document.getElementById('edad').value    || '—';
+  const profe   = document.getElementById('profe').value   || '—';
+  const correo  = document.getElementById('correo-paciente').value || '';
+
+  const res  = calcRes(pA, pB, pC, pD);
+  const plan = buildPlan(pA, pB, pC, pD);
+  const planTxt = plan.map(i => `• ${i.b}${i.d}`).join('\n');
+
+  const mensaje =
+`PLAN FITOCIENCIA® — ${nombre}
+
+Fecha: ${fecha} | Edad: ${edad}
+Profesional: ${profe}
+
+PUNTAJES:
+A (Estrés): ${pA}/12
+B (Sueño): ${pB}/16
+C (Neuromuscular): ${pC}/12
+D (Digestión): ${pD}/8
+
+RECOMENDACIONES:
+
+A — ${res.pA}
+${res.dA}
+
+B — ${res.pB}
+${res.dB}
+
+C — ${res.pC}
+${res.dC}
+
+D — ${res.pD}
+${res.dD}
+
+PLAN PERSONALIZADO:
+${planTxt}
+
+— Generado por Fitociencia® Guatemala`;
+
+  // Enviar a Formspree (a fitociencialdo@gmail.com)
+  let enviado = false;
+  try {
+    const resp = await fetch(FORMSPREE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: `Nuevo cuestionario Fitociencia® — ${nombre}`,
+        paciente: nombre,
+        fecha, edad,
+        profesional: profe,
+        correo_paciente: correo,
+        puntaje_estres: `${pA}/12`,
+        puntaje_sueno: `${pB}/16`,
+        puntaje_muscular: `${pC}/12`,
+        puntaje_digestion: `${pD}/8`,
+        rec_estres: res.pA,
+        rec_sueno: res.pB,
+        rec_muscular: res.pC,
+        rec_digestion: res.pD,
+        plan_completo: planTxt,
+        mensaje_completo: mensaje
+      })
+    });
+    enviado = resp.ok;
+  } catch (e) { enviado = false; }
+
+  // Construir links de compartir
+  const txtWA = encodeURIComponent(`*Mi Plan Fitociencia®*\n\n*${nombre}*\n${fecha}\n\n*A — Estrés (${pA}/12):*\n${res.pA}\n\n*B — Sueño (${pB}/16):*\n${res.pB}\n\n*C — Muscular (${pC}/12):*\n${res.pC}\n\n*D — Digestión (${pD}/8):*\n${res.pD}\n\n*Mi plan:*\n${planTxt}\n\n_Fitociencia® Guatemala_`);
+  document.getElementById('btn-wa').href = `https://wa.me/?text=${txtWA}`;
+
+  if (correo) {
+    const asunto = encodeURIComponent(`Mi Plan Fitociencia® — ${nombre}`);
+    const cuerpo = encodeURIComponent(mensaje);
+    document.getElementById('btn-email-pac').href = `mailto:${correo}?subject=${asunto}&body=${cuerpo}`;
+  } else {
+    document.getElementById('btn-email-pac').style.display = 'none';
+  }
+
+  // Mostrar resultados
+  document.getElementById('res-sub').textContent = `Evaluación de ${nombre} · ${fecha}`;
+  document.getElementById('ptA').textContent = `${pA}/12 pts`;
+  document.getElementById('ptB').textContent = `${pB}/16 pts`;
+  document.getElementById('ptC').textContent = `${pC}/12 pts`;
+  document.getElementById('ptD').textContent = `${pD}/8 pts`;
+  ['A','B','C','D'].forEach(l => {
+    document.getElementById('p'+l).textContent = res['p'+l];
+    document.getElementById('d'+l).textContent = res['d'+l];
+    document.getElementById('t'+l).textContent = res['t'+l];
+  });
+
+  const lista = document.getElementById('planLista');
+  lista.innerHTML = '';
+  plan.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'plan-item';
+    d.innerHTML = `<div class="plan-dot" style="background:${item.c}"></div><div><strong>${item.b}</strong><span style="color:#666">${item.d}</span></div>`;
+    lista.appendChild(d);
+  });
+
+  document.getElementById(enviado ? 'alertaOk' : 'alertaErr').style.display = 'block';
+  irA(6);
+}
+
+function reiniciar() {
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  document.querySelectorAll('.opcion').forEach(o => o.classList.remove('sel'));
+  ['av2','av3','av4','alertaOk','alertaErr'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['nombre','fecha','edad','profe','correo-paciente'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('btn-email-pac').href = '#';
+  document.getElementById('btn-wa').href = '#';
+  document.getElementById('btn-email-pac').style.display = 'flex';
+  irA(1);
+}
+</script>
+</body>
+</html>
